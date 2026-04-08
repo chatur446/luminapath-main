@@ -1,0 +1,574 @@
+/* Modern Medical UI Styling for LuminaPath */
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f5f7fa !important;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #000000 !important;
+}
+
+.stApp {
+    background: #f5f7fa !important;
+}
+
+/* Make all text black and readable */
+p, div, span, label, h1, h2, h3, h4, h5, h6, a, li, td, th {
+    color: #000000 !important;
+}
+
+/* Streamlit-specific text */
+.stMarkdown, .stMarkdown p, .stMarkdown div, .stMarkdown span {
+    color: #000000 !important;
+}
+
+.stText, .stCaption {
+    color: #000000 !important;
+}
+
+/* Form labels - black and bold */
+.stTextInput > label,
+.stNumberInput > label,
+.stSelectbox > label,
+.stFileUploader > label,
+.stRadio > label,
+.stCheckbox > label {
+    color: #000000 !important;
+    font-weight: 600 !important;
+    font-size: 1em !important;
+    margin-bottom: 8px !important;
+}
+
+/* Top header - professional medical style */
+.header {
+    text-align: center;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    color: #ffffff !important;
+    font-size: 3em;
+    font-weight: 700;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.subtitle {
+    color: #f0f0f0 !important;
+    font-size: 1.2em;
+    font-weight: 300;
+    margin-top: 10px;
+}
+
+/* Section titles */
+.section-header {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: #1a237e !important;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border-radius: 12px;
+    border-left: 5px solid #1e88e5;
+    box-shadow: 0 4px 12px rgba(30, 136, 229, 0.15);
+}
+
+/* Card-style containers */
+.stForm, .block-container {
+    background: #ffffff !important;
+}
+
+div[data-testid="stForm"] {
+    padding: 30px;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e0e0e0;
+}
+
+/* Input fields - Light medical style with excellent readability */
+.stTextInput > div > div > input,
+.stNumberInput > div > div > input {
+    background: #ffffff !important;
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 10px !important;
+    padding: 12px 18px !important;
+    font-size: 1em !important;
+    color: #000000 !important;
+    font-weight: 500 !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    transition: all 0.3s ease;
+}
+
+.stTextInput > div > div > input:focus,
+.stNumberInput > div > div > input:focus {
+    outline: none !important;
+    border: 2px solid #1e88e5 !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    box-shadow: 0 4px 12px rgba(30, 136, 229, 0.2) !important;
+}
+
+/* Input placeholder */
+.stTextInput > div > div > input::placeholder,
+.stNumberInput > div > div > input::placeholder {
+    color: #9e9e9e !important;
+}
+
+/* Selectbox / Dropdown - Bright and readable */
+.stSelectbox > div > div {
+    background: linear-gradient(135deg, #eef3ff 0%, #ffffff 100%) !important;
+    border: 2px solid #e0e0e0 !important;
+    border-radius: 10px !important;
+    box-shadow: inset 4px 4px 10px rgba(0,0,0,0.06), 
+                inset -4px -4px 10px rgba(255,255,255,0.9),
+                0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.stSelectbox select {
+    background: transparent !important;
+    color: #000000 !important;
+    border: none !important;
+    padding: 12px 18px !important;
+    font-size: 1em !important;
+    font-weight: 500 !important;
+}
+
+.stSelectbox select:focus {
+    outline: none !important;
+    border: 2px solid #1e88e5 !important;
+}
+
+/* Force all selectbox text to black - HIGH PRIORITY */
+.stSelectbox *,
+.stSelectbox div,
+.stSelectbox span {
+    color: #000000 !important;
+}
+
+/* Combobox role element */
+div[role="combobox"],
+div[role="combobox"] *,
+div[role="combobox"] span,
+div[role="combobox"] div {
+    color: #000000 !important;
+}
+
+/* Streamlit's modern select component - Force premium gradient background */
+[data-baseweb="select"] {
+    background: linear-gradient(135deg, #eef3ff 0%, #ffffff 100%) !important;
+    border-radius: 10px !important;
+    box-shadow: inset 4px 4px 10px rgba(0,0,0,0.06), 
+                inset -4px -4px 10px rgba(255,255,255,0.9) !important;
+}
+
+[data-baseweb="select"] > div {
+    background: transparent !important;
+    color: #000000 !important;
+    border: 2px solid #e0e0e0 !important;
+    padding: 8px 12px !important;
+    font-weight: 500 !important;
+}
+
+[data-baseweb="select"]:hover > div {
+    border-color: #1e88e5 !important;
+    background: transparent !important;
+}
+
+/* Force ALL nested elements in select to be black */
+[data-baseweb="select"] * {
+    color: #000000 !important;
+}
+
+[data-baseweb="select"] > div > div {
+    color: #000000 !important;
+    background: transparent !important;
+}
+
+[data-baseweb="select"] span {
+    color: #000000 !important;
+}
+
+[data-baseweb="select"] input {
+    color: #000000 !important;
+}
+
+[data-baseweb="select"] div[role="button"] {
+    color: #000000 !important;
+}
+
+[data-baseweb="select"] div[role="button"] > div {
+    color: #000000 !important;
+}
+
+/* Arrow icon */
+[data-baseweb="select"] svg {
+    color: #000000 !important;
+    fill: #000000 !important;
+}
+
+/* Dropdown popover - white background, black text, neumorphic shadow */
+[data-baseweb="popover"] {
+    background: transparent !important;
+}
+
+[data-baseweb="popover"] > div {
+    background: #ffffff !important;
+    border-radius: 10px !important;
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.08), 
+                -2px -2px 8px rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid #e0e0e0 !important;
+}
+
+/* Dropdown menu list */
+[data-baseweb="menu"] {
+    background: #ffffff !important;
+    border-radius: 10px !important;
+    padding: 8px !important;
+}
+
+[data-baseweb="menu"] > ul {
+    background: #ffffff !important;
+}
+
+/* Dropdown menu items */
+[data-baseweb="menu"] li,
+[role="option"] {
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 10px 16px !important;
+    border-radius: 6px !important;
+    margin: 2px 0 !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+}
+
+[data-baseweb="menu"] li:hover,
+[role="option"]:hover {
+    background: #f2f2f2 !important;
+    color: #000000 !important;
+}
+
+[data-baseweb="menu"] li[aria-selected="true"],
+[role="option"][aria-selected="true"] {
+    background: #e3f2fd !important;
+    color: #000000 !important;
+}
+
+[data-baseweb="menu"] li > div,
+[role="option"] > div {
+    color: #000000 !important;
+}
+
+/* Listbox role */
+[role="listbox"] {
+    background: #ffffff !important;
+    color: #000000 !important;
+}
+
+/* Select dropdown options */
+.stSelectbox select option {
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 12px !important;
+}
+
+/* File uploader */
+.stFileUploader > div {
+    background: #ffffff !important;
+    border: 2px dashed #9e9e9e !important;
+    border-radius: 15px !important;
+    padding: 25px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    transition: all 0.3s ease;
+}
+
+.stFileUploader > div:hover {
+    border-color: #1e88e5 !important;
+    background: #f5f9ff !important;
+    box-shadow: 0 4px 12px rgba(30, 136, 229, 0.15) !important;
+}
+
+/* Buttons - Professional medical style */
+.stButton > button {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 14px 32px !important;
+    font-size: 1.05em !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3) !important;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4) !important;
+}
+
+.stButton > button:active {
+    transform: translateY(0px);
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3) !important;
+}
+
+/* Primary button */
+.stButton > button[kind="primary"],
+.stButton > button[type="primary"] {
+    background: linear-gradient(135deg, #1e88e5 0%, #1565c0 100%) !important;
+    box-shadow: 0 4px 12px rgba(30, 136, 229, 0.3) !important;
+}
+
+.stButton > button[kind="primary"]:hover,
+.stButton > button[type="primary"]:hover {
+    background: linear-gradient(135deg, #2196f3 0%, #1e88e5 100%) !important;
+    box-shadow: 0 6px 20px rgba(30, 136, 229, 0.4) !important;
+}
+
+/* Download button */
+.stDownloadButton > button {
+    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%) !important;
+    color: #ffffff !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 14px 32px !important;
+    font-size: 1.05em !important;
+    font-weight: 600 !important;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3) !important;
+    transition: all 0.3s ease;
+}
+
+.stDownloadButton > button:hover {
+    background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4) !important;
+}
+
+/* Images */
+.stImage {
+    border-radius: 15px !important;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1) !important;
+    border: 1px solid #e0e0e0;
+}
+
+/* Progress bar */
+.stProgress > div > div {
+    background: #e0e0e0 !important;
+    border-radius: 10px !important;
+}
+
+.stProgress > div > div > div {
+    background: linear-gradient(90deg, #1e88e5, #42a5f5) !important;
+    border-radius: 10px !important;
+}
+
+/* Alert boxes */
+.stAlert {
+    background: #ffffff !important;
+    border: 1px solid #e0e0e0 !important;
+    border-radius: 12px !important;
+    padding: 15px 20px !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    color: #000000 !important;
+}
+
+.stAlert p, .stAlert div, .stAlert span {
+    color: #000000 !important;
+}
+
+.stSuccess {
+    border-left: 5px solid #4caf50 !important;
+    background: #e8f5e9 !important;
+}
+
+.stError {
+    border-left: 5px solid #f44336 !important;
+    background: #ffebee !important;
+}
+
+.stWarning {
+    border-left: 5px solid #ff9800 !important;
+    background: #fff3e0 !important;
+}
+
+.stInfo {
+    border-left: 5px solid #2196f3 !important;
+    background: #e3f2fd !important;
+}
+
+/* Columns */
+.row-widget {
+    gap: 20px;
+}
+
+/* Column containers - remove excess padding */
+[data-testid="column"] {
+    padding: 0 10px !important;
+}
+
+/* Hide Streamlit branding */
+#MainMenu {visibility: hidden;}
+footer {visibility: hidden;}
+header {visibility: hidden;}
+
+/* Horizontal line */
+hr {
+    border: none;
+    height: 2px;
+    background: linear-gradient(90deg, 
+                rgba(30, 136, 229, 0) 0%, 
+                rgba(30, 136, 229, 0.3) 50%, 
+                rgba(30, 136, 229, 0) 100%);
+    margin: 30px 0;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .header h1 {
+        font-size: 2em;
+    }
+    
+    .subtitle {
+        font-size: 1em;
+    }
+    
+    .section-header {
+        font-size: 1.2em;
+    }
+    
+    [data-testid="column"] {
+        padding: 0 5px !important;
+    }
+}
+
+/* === PREMIUM MIXED-COLOR BACKGROUND FIX FOR SELECTBOX === */
+/* This wrapper forces a premium gradient background so text is clearly visible */
+
+div[data-baseweb="select"] > div:first-child {
+    background: linear-gradient(
+        135deg,
+        #d7e8ff 0%,
+        #f0e8ff 50%,
+        #e3f7ff 100%
+    ) !important;
+    
+    border-radius: 14px !important;
+    padding: 14px !important;
+    
+    /* Soft premium medical shadow */
+    box-shadow:
+        inset 4px 4px 12px rgba(0, 0, 0, 0.05),
+        inset -4px -4px 12px rgba(255, 255, 255, 0.9),
+        4px 4px 12px rgba(0, 0, 0, 0.08),
+        -4px -4px 12px rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Force selected text readable - CRITICAL OVERRIDE */
+div[data-baseweb="select"] div[role="textbox"],
+div[data-baseweb="select"] div[role="textbox"] *,
+div[data-baseweb="select"] div[role="button"],
+div[data-baseweb="select"] div[role="button"] *,
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] span *,
+div[data-baseweb="select"] div > div,
+div[data-baseweb="select"] div > div > div {
+    color: #000000 !important;
+    font-weight: 600 !important;
+    text-shadow: none !important;
+}
+
+/* Target the exact selected value container when closed */
+div[data-baseweb="select"] > div > div:first-child,
+div[data-baseweb="select"] > div > div:first-child *,
+div[data-baseweb="select"] > div > div:first-child > div,
+div[data-baseweb="select"] > div > div:first-child > div * {
+    color: #000000 !important;
+}
+
+/* Target BaseWeb's internal value container */
+div[class*="StyledControlContainer"] div,
+div[class*="StyledControlContainer"] span,
+div[class*="StyledValueContainer"] div,
+div[class*="StyledValueContainer"] span,
+div[class*="StyledSingleValue"],
+div[class*="StyledSingleValue"] * {
+    color: #000000 !important;
+}
+
+/* Arrow icon styling */
+div[data-baseweb="select"] svg,
+div[data-baseweb="select"] svg * {
+    color: #000000 !important;
+    stroke: #000000 !important;
+    fill: #000000 !important;
+    filter: none !important;
+}
+
+/* Absolute nuclear option - override EVERYTHING */
+[data-baseweb="select"] * {
+    color: #000000 !important;
+}
+
+/* Force any div with aria-live inside select to black */
+div[data-baseweb="select"] div[aria-live],
+div[data-baseweb="select"] div[aria-live] * {
+    color: #000000 !important;
+}
+
+/* Nuclear option - force everything inside select to black */
+div[data-baseweb="select"],
+div[data-baseweb="select"] *,
+div[data-baseweb="select"] > *,
+div[data-baseweb="select"] div,
+div[data-baseweb="select"] span,
+div[data-baseweb="select"] div[role="button"],
+div[data-baseweb="select"] div[role="button"] *,
+div[data-baseweb="select"] div[role="textbox"],
+div[data-baseweb="select"] div[role="textbox"] * {
+    color: #000000 !important;
+}
+
+/* Placeholder exception */
+div[data-baseweb="select"] span[data-placeholder="true"] {
+    color: #777777 !important;
+}
+
+/* Ensure dropdown list text stays black */
+div[data-baseweb="popover"] [role="option"],
+div[data-baseweb="popover"] [role="option"] *,
+div[data-baseweb="menu"] li,
+div[data-baseweb="menu"] li * {
+    color: #000000 !important;
+    background: #ffffff !important;
+}
+
+/* Hover state */
+div[data-baseweb="popover"] [role="option"]:hover,
+div[data-baseweb="menu"] li:hover {
+    background: #f2f2f2 !important;
+    color: #000000 !important;
+}
+
+/* Ensure selected option is visible */
+div[data-baseweb="popover"] [aria-selected="true"] {
+    background: #e3f2fd !important;
+    color: #000000 !important;
+}
+
+/* Fix arrow icon */
+div[data-baseweb="select"] svg,
+div[data-baseweb="select"] svg * {
+    color: #000000 !important;
+    fill: #000000 !important;
+}
