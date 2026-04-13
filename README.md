@@ -179,7 +179,7 @@ The AI recognizes 8 retinal conditions:
 
 #### 1. Get the Code
 ```bash
-git clone https://github.com/yourusername/lumina_path.git
+git clone https://github.com/chatur466/luminapath-main.git
 cd lumina_path
 ```
 
