@@ -2,6 +2,7 @@
 
 import os
 import numpy as np
+import tensorflow as tf
 from tensorflow import keras
 from PIL import Image
 from pathlib import Path
@@ -28,50 +29,63 @@ CLASS_MAPPING = {
 def load_model():
     """Load the AI model (only once, then reuse)"""
     global _model
-    
+
     if _model is None:
         if not os.path.exists(MODEL_PATH):
             raise FileNotFoundError(f"Model file not found at {MODEL_PATH}")
-        
+
         print(f"⏳ Loading model from {MODEL_PATH}...")
-        # Load without compiling (faster)
-        _model = keras.models.load_model(MODEL_PATH, compile=False)
-        
+
+        try:
+            # Try standard loading first
+            _model = keras.models.load_model(MODEL_PATH, compile=False)
+        except Exception:
+            try:
+                # Try legacy h5 loading
+                _model = tf.keras.models.load_model(
+                    MODEL_PATH,
+                    compile=False,
+                    custom_objects=None
+                )
+            except Exception:
+                # Last resort: load weights only
+                _model = keras.models.load_model(
+                    str(MODEL_PATH),
+                    compile=False,
+                    options=tf.saved_model.LoadOptions(
+                        experimental_io_device='/job:localhost'
+                    )
+                )
+
         # Warm up for faster first use
         dummy_input = np.zeros((1, 224, 224, 3), dtype=np.float32)
         _ = _model.predict(dummy_input, verbose=0)
-        
+
         print(f"✅ Model loaded and warmed up successfully")
-    
+
     return _model
 
 
 def preprocess_image(image_file):
     """Get image ready for the AI model"""
-    # Open image
     img = Image.open(image_file)
-    
-    # Make sure it's RGB
+
     if img.mode != 'RGB':
         img = img.convert('RGB')
-    
-    # Resize to what model expects
+
     target_size = (224, 224)
     img = img.resize(target_size, Image.BILINEAR)
-    
-    # Turn into numbers (0-1 range)
+
     img_array = np.array(img, dtype=np.float32) / 255.0
-    
-    # Add batch dimension (required by model)
     img_array = np.expand_dims(img_array, axis=0)
-    
+
     return img_array
 
 
 def get_model_info():
     """Get model details"""
     model = load_model()
-    
+
     return {
         'input_shape': model.input_shape,
         'output_shape': model.output_shape,
