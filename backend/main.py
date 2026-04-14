@@ -78,9 +78,16 @@ def _run_prediction(image_bytes, content_type):
         predicted_class = CLASS_LABELS[predicted_index]
         
         # Turn into readable name
+        # Turn into readable name
         disease_name = get_disease_name(predicted_class)
         
-        return disease_name
+        # Get confidence scores for all classes
+        confidence_scores = {}
+        for i, label in enumerate(CLASS_LABELS):
+           disease_name = get_disease_name(predicted_class)
+        confidence = round(float(predictions[0][predicted_index]) * 100, 2)
+        
+        return disease_name, confidence
     
     except Exception as e:
         raise Exception(f"Prediction failed: {str(e)}")
@@ -101,8 +108,10 @@ async def predict(file: UploadFile = File(...)):
         )
         
         # Return only the disease name
+        disease_name, confidence = disease_name
         return {
-            "predicted_class": disease_name
+            "predicted_class": disease_name,
+            "confidence": confidence
         }
     
     except asyncio.TimeoutError:
