@@ -2,6 +2,7 @@
 
 import os
 import google.generativeai as genai
+import google.generativeai
 from typing import Optional, Dict, Any
 import traceback
 import time
@@ -11,7 +12,7 @@ from datetime import datetime
 from config import Config
 
 # Main AI: Gemini 2.5 Flash
-GEMINI_MODEL = "models/gemini-2.5-flash"
+GEMINI_MODEL = "gemini-1.5-flash"	
 
 # Backup AI: Perplexity
 PERPLEXITY_API_URL = "https://api.perplexity.ai/chat/completions"
