@@ -682,9 +682,12 @@ def generate_report(uploaded_file, patient_name, patient_age, patient_gender,
             st.error(f"❌ Prediction failed: {response.text}")
             return
         
-        prediction_data = response.json()
         predicted_class = prediction_data.get("predicted_class")
+        confidence = prediction_data.get("confidence", 0)
         
+        if confidence:
+            st.info(f"🎯 AI Confidence Score: **{confidence}%**")
+            
         if not predicted_class:
             status_text.empty()
             progress_bar.empty()
