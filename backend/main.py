@@ -78,13 +78,7 @@ def _run_prediction(image_bytes, content_type):
         predicted_class = CLASS_LABELS[predicted_index]
         
         # Turn into readable name
-        # Turn into readable name
         disease_name = get_disease_name(predicted_class)
-        
-        # Get confidence scores for all classes
-        confidence_scores = {}
-        for i, label in enumerate(CLASS_LABELS):
-           disease_name = get_disease_name(predicted_class)
         confidence = round(float(predictions[0][predicted_index]) * 100, 2)
         
         return disease_name, confidence
