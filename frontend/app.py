@@ -681,7 +681,7 @@ def generate_report(uploaded_file, patient_name, patient_age, patient_gender,
             progress_bar.empty()
             st.error(f"❌ Prediction failed: {response.text}")
             return
-        
+        prediction_data = response.json()
         predicted_class = prediction_data.get("predicted_class")
         confidence = prediction_data.get("confidence", 0)
         
