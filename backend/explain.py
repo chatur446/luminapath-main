@@ -47,7 +47,14 @@ def get_perplexity_key() -> Optional[str]:
 
 def _build_prompt(disease_name: str, language: str) -> str:
     """Create the AI prompt"""
-    return f"""You are an educational ophthalmology assistant. Provide an informational overview of the retinal condition called "{disease_name}" in {language}.
+    return f"""You are an educational ophthalmology assistant.
+
+CRITICAL LANGUAGE INSTRUCTION: You MUST write your ENTIRE response in {language}. 
+Every single word, sentence, and heading must be in {language}.
+Do NOT use English unless {language} is English.
+Do NOT mix languages. Respond only in {language}.
+
+Provide an informational overview of the retinal condition called "{disease_name}".
 
 Include:
 - Brief description of the condition
@@ -55,7 +62,9 @@ Include:
 - General causes or risk factors
 - Available treatment approaches
 
-Keep it educational and professional. This is for healthcare training purposes."""
+Keep it educational and professional. This is for healthcare training purposes.
+
+REMINDER: Your entire response must be written in {language} only."""
 
 
 def _get_static_fallback(disease_name: str) -> str:
@@ -72,7 +81,7 @@ Key points:
 Consult an ophthalmologist for personalized medical guidance."""
 
 
-def _call_perplexity(prompt: str) -> Optional[str]:
+def _call_perplexity(prompt: str, language: str = "English") -> Optional[str]:
     """Ask Perplexity AI"""
     try:
         api_key = get_perplexity_key()
@@ -87,7 +96,10 @@ def _call_perplexity(prompt: str) -> Optional[str]:
             json={
                 "model": PERPLEXITY_MODEL,
                 "messages": [
-                    {"role": "system", "content": "You are an expert ophthalmology educator."},
+                    {
+                        "role": "system",
+                        "content": f"You are an expert ophthalmology educator. You MUST respond entirely in {language}. Do not use any other language."
+                    },
                     {"role": "user", "content": prompt}
                 ],
                 "temperature": 0.7,
@@ -211,7 +223,7 @@ def get_disease_explanation(disease_name: str, language: str = "English") -> str
         # Try primary API
         if USE_PERPLEXITY_FIRST:
             print("[INFO] Using Perplexity (primary)")
-            text = _call_perplexity(prompt)
+            text = _call_perplexity(prompt, language)
             if text:
                 return text
             print("[WARN] Perplexity failed, trying Gemini")
@@ -224,7 +236,7 @@ def get_disease_explanation(disease_name: str, language: str = "English") -> str
             if text:
                 return text
             print("[WARN] Gemini failed, trying Perplexity")
-            text = _call_perplexity(prompt)
+            text = _call_perplexity(prompt, language)
             if text:
                 return text
         
@@ -304,6 +316,11 @@ def generate_full_medical_report(
         # Build comprehensive prompt for Gemini
         prompt = f"""You are a professional medical reporting assistant creating a clinic-grade educational retinal analysis report.
 
+CRITICAL LANGUAGE INSTRUCTION: You MUST write the ENTIRE report in {language}.
+Every single word, heading, label, sentence, and section must be in {language}.
+Do NOT use English unless {language} is English.
+Do NOT mix languages. The entire output must be in {language} only.
+
 PATIENT INFORMATION:
 - Patient Name: {patient_name}
 - Patient ID: {patient_id}
@@ -322,13 +339,13 @@ BASE MEDICAL INFORMATION:
 {explanation_text}
 
 TASK:
-Create a complete, professional medical report in {language}. Format it like a real clinic report with clear sections and professional medical language. Include:
+Create a complete, professional medical report entirely in {language}. Format it like a real clinic report with clear sections and professional medical language. Include:
 
-1. **Title Section**: "LuminaPath - AI-Powered Retinal Analysis Report"
+1. **Title Section**: "LuminaPath - AI-Powered Retinal Analysis Report" (translated to {language})
 
-2. **Patient & Clinic Details**: Format as a clean table with all patient information
+2. **Patient & Clinic Details**: Format as a clean table with all patient information (all labels in {language})
 
-3. **Diagnosis Section**: State the detected condition clearly
+3. **Diagnosis Section**: State the detected condition clearly (in {language})
 
 4. **Medical Overview**: Provide a comprehensive educational overview of {disease_display} including:
    - What this condition is and how it affects the retina
@@ -350,10 +367,13 @@ IMPORTANT FORMATTING RULES:
 - Use clear headings with symbols (📋, 🔬, 📚, 💡, ⚠️)
 - Use bullet points for lists
 - Write in professional medical language but keep it patient-friendly
-- NO placeholders or generic phrases like "consult your doctor"
+- NO placeholders or generic phrases
 - Be specific and educational
-- Make it look like a real medical report from Mayo Clinic or Johns Hopkins
+- Make it look like a real medical report
 - Total report should be comprehensive but readable (aim for 400-600 words)
+- EVERY word must be in {language}
+
+FINAL REMINDER: The entire report must be written in {language} only. No English unless {language} is English.
 
 Return ONLY the formatted medical report text. Do not include any preamble or explanations."""
 
@@ -406,6 +426,7 @@ def _generate_fallback_report(
     return f"""👁️ LUMINAPATH - AI-POWERED RETINAL ANALYSIS REPORT
 
 Report Date: {report_date} | Time: {report_time}
+Report Language: {language}
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
