@@ -93,7 +93,6 @@ def save_patient_history(patient_data):
         
         # Keep only last 50
         if len(history) > 50:
-            # Sort by last_visit and keep most recent 50
             sorted_history = dict(sorted(history.items(), 
                                         key=lambda x: x[1].get('last_visit', ''), 
                                         reverse=True)[:50])
@@ -133,6 +132,8 @@ if 'report_data' not in st.session_state:
     st.session_state.report_data = None
 if 'send_email_clicked' not in st.session_state:
     st.session_state.send_email_clicked = False
+if 'selected_language' not in st.session_state:
+    st.session_state.selected_language = "English"
 
 
 def main():
@@ -185,7 +186,6 @@ def main():
             
             # Fill form if patient selected
             if selected != "-- New Patient --":
-                # Extract patient ID from selection
                 patient_id_match = selected.split("ID: ")[-1].rstrip(")")
                 if patient_id_match in st.session_state.patient_history:
                     st.session_state.selected_patient = st.session_state.patient_history[patient_id_match]
@@ -230,9 +230,17 @@ def main():
                     horizontal=True
                 )
             
+            # Handle patient_id_match when no history exists
+            default_patient_id = ""
+            if patient_suggestions and st.session_state.selected_patient:
+                try:
+                    default_patient_id = patient_id_match
+                except NameError:
+                    default_patient_id = ""
+
             patient_id = st.text_input(
                 "Patient ID *",
-                value=patient_id_match if st.session_state.selected_patient else "",
+                value=default_patient_id,
                 placeholder="e.g., P12345",
                 help="Unique patient identifier"
             )
@@ -251,10 +259,9 @@ def main():
                 help="Name of referring ophthalmologist"
             )
             
-            # Language selection with custom input option
+            # Language selection
             st.markdown("**Report Language ***")
             
-            # Top languages with Kannada, Hindi (India), English prioritized
             top_languages = ["Kannada", "Hindi (India)", "English", "Spanish", "French", "German", "Chinese (Simplified)", "Arabic", "Other"]
             language_suggestion = st.radio(
                 "Choose language",
@@ -275,10 +282,7 @@ def main():
                 final_language = custom_language.strip() if custom_language.strip() else "English"
             else:
                 final_language = language_suggestion
-            
-            # Use final_language variable for backward compatibility
-            language = final_language
-            
+
             st.markdown("<br>", unsafe_allow_html=True)
             
             # Big button
@@ -290,6 +294,9 @@ def main():
     
     # When user clicks generate
     if submit_button:
+        # Save chosen language to session state IMMEDIATELY on submit
+        st.session_state.selected_language = final_language
+
         # Check required fields
         if not st.session_state.uploaded_file:
             st.error("❌ Please upload an OCT scan image")
@@ -302,6 +309,9 @@ def main():
         if '@' not in patient_email:
             st.error("❌ Please enter a valid email address")
             return
+
+        # Show selected language for confirmation
+        st.info(f"🌍 Generating report in: **{st.session_state.selected_language}**")
         
         # Save patient to history
         save_patient_history({
@@ -313,7 +323,7 @@ def main():
             'doctor_name': doctor_name
         })
         
-        # Generate report
+        # Generate report using language from session state
         generate_report(
             uploaded_file=st.session_state.uploaded_file,
             patient_name=patient_name,
@@ -322,13 +332,17 @@ def main():
             patient_id=patient_id,
             patient_email=patient_email,
             doctor_name=doctor_name,
-            language=language
+            language=st.session_state.selected_language
         )
     
     # Display report if it exists in session state
     if st.session_state.full_report and st.session_state.report_data:
         st.markdown("---")
         st.markdown("### 📋 Your Complete Medical Report")
+
+        # Show which language the report is in
+        report_lang = st.session_state.report_data.get("language", "English")
+        st.caption(f"🌍 Report Language: **{report_lang}**")
         
         # Display report in a styled container
         st.markdown("""
@@ -397,7 +411,6 @@ def main():
             except Exception as e:
                 st.error(f"❌ Email error: {str(e)}")
         
-        # Reset flag after sending
         st.session_state.send_email_clicked = False
     
     # Bottom of page
@@ -411,10 +424,9 @@ def main():
 
 
 def display_report_preview(patient_name, patient_age, patient_gender, patient_id, 
-                          patient_email, doctor_name, predicted_disease, explanation_text, pdf_path, oct_image):
+                          patient_email, doctor_name, predicted_disease, explanation_text, pdf_path, oct_image, language="English"):
     """Show nice report preview before download"""
     
-    # Get time info once
     now = datetime.now()
     report_date = now.strftime("%B %d, %Y")
     report_time = now.strftime("%I:%M %p")
@@ -449,7 +461,7 @@ def display_report_preview(patient_name, patient_age, patient_gender, patient_id
         st.markdown(f"""
         <div style="padding: 15px; background: #f8f9fa; border-radius: 10px; border-left: 4px solid #764ba2;">
             <p style="margin: 5px 0; color: #333;"><b>🕐 Report Time:</b> {report_time}</p>
-            <p style="margin: 5px 0; color: #333;"><b>🌍 Language:</b> English</p>
+            <p style="margin: 5px 0; color: #333;"><b>🌍 Language:</b> {language}</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -462,7 +474,6 @@ def display_report_preview(patient_name, patient_age, patient_gender, patient_id
     </div>
     """, unsafe_allow_html=True)
     
-    # Create two columns for patient details
     col_p1, col_p2 = st.columns(2)
     
     with col_p1:
@@ -523,13 +534,11 @@ def display_report_preview(patient_name, patient_age, patient_gender, patient_id
     </div>
     """, unsafe_allow_html=True)
     
-    # Process explanation text to display properly
     if explanation_text and explanation_text.strip():
         st.markdown(f"""
         <div style="background: white; padding: 25px; border-radius: 10px; border: 2px solid #e0e0e0; color: #000;">
         """, unsafe_allow_html=True)
         
-        # Split into lines for better formatting
         lines = explanation_text.split('\n')
         formatted_text = ""
         
@@ -538,7 +547,6 @@ def display_report_preview(patient_name, patient_age, patient_gender, patient_id
             if not line or line.startswith('['):
                 continue
             
-            # Check if section header
             if line.endswith(':') and len(line) < 60:
                 formatted_text += f"\n**{line}**\n\n"
             elif line.startswith('•') or line.startswith('-') or line.startswith('*'):
@@ -603,7 +611,7 @@ def display_report_preview(patient_name, patient_age, patient_gender, patient_id
     st.markdown("<br><br>", unsafe_allow_html=True)
     st.markdown("---")
     
-    # Download section at the end
+    # Download section
     st.markdown("""
     <div style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); color: white; padding: 10px 15px; 
                 border-radius: 8px; margin: 20px 0 15px 0; text-align: center;">
@@ -629,7 +637,6 @@ def display_report_preview(patient_name, patient_age, patient_gender, patient_id
             st.success("✅ Report generated successfully!")
             st.info("✉️ A copy has been sent to: " + patient_email)
             
-            # Footer
             st.markdown("""
             <div style="text-align: center; margin-top: 30px; padding: 20px; background: #f5f5f5; border-radius: 10px;">
                 <p style="margin: 0; color: #666; font-style: italic; font-size: 0.9em;">
@@ -647,6 +654,12 @@ def display_report_preview(patient_name, patient_age, patient_gender, patient_id
 def generate_report(uploaded_file, patient_name, patient_age, patient_gender, 
                    patient_id, patient_email, doctor_name, language):
     """Talk to backend to make the report"""
+
+    # Safety check - make sure language is valid
+    if not language or language.strip() == "":
+        language = "English"
+
+    print(f"[DEBUG] Generating report in language: {language}")
     
     progress_bar = st.progress(0)
     status_text = st.empty()
@@ -658,12 +671,11 @@ def generate_report(uploaded_file, patient_name, patient_age, patient_gender,
         
         files = {"file": (uploaded_file.name, uploaded_file.getvalue(), uploaded_file.type)}
         
-        # Don't wait forever
         try:
             response = requests.post(
                 f"{API_BASE_URL}/predict", 
                 files=files, 
-                timeout=15  # 15-second timeout
+                timeout=15
             )
         except requests.exceptions.Timeout:
             status_text.empty()
@@ -681,6 +693,7 @@ def generate_report(uploaded_file, patient_name, patient_age, patient_gender,
             progress_bar.empty()
             st.error(f"❌ Prediction failed: {response.text}")
             return
+
         prediction_data = response.json()
         predicted_class = prediction_data.get("predicted_class")
         confidence = prediction_data.get("confidence", 0)
@@ -694,51 +707,51 @@ def generate_report(uploaded_file, patient_name, patient_age, patient_gender,
             st.error(f"❌ No prediction returned from server")
             return
         
-        # Step 2: Get AI explanation
-        status_text.text("🤖 Generating medical explanation...")
+        # Step 2: Get AI explanation in selected language
+        status_text.text(f"🤖 Generating medical explanation in {language}...")
         progress_bar.progress(40)
         
         explain_payload = {
             "disease_name": predicted_class,
-            "language": language
+            "language": language          # ← language passed explicitly
         }
+
+        print(f"[DEBUG] Sending explain request with language: {language}")
         
         try:
             response = requests.post(
                 f"{API_BASE_URL}/explain", 
                 json=explain_payload,
-                timeout=30  # 30-second timeout for AI explanation
+                timeout=30
             )
         except requests.exceptions.Timeout:
             status_text.empty()
             progress_bar.empty()
-            st.error("⏱️ AI explanation timeout: The AI took too long to respond. Using fallback.")
-            explanation_text = "Detailed medical explanation is currently unavailable. Please consult with your ophthalmologist for a comprehensive analysis."
+            st.error("⏱️ AI explanation timeout. Using fallback.")
+            explanation_text = "Detailed medical explanation is currently unavailable. Please consult with your ophthalmologist."
         except Exception as e:
             status_text.empty()
             progress_bar.empty()
             st.warning(f"⚠️ Explanation generation issue: {str(e)}. Using fallback.")
-            explanation_text = "Detailed medical explanation is currently unavailable. Please consult with your ophthalmologist for a comprehensive analysis."
+            explanation_text = "Detailed medical explanation is currently unavailable. Please consult with your ophthalmologist."
         else:
             if response.status_code != 200:
-                st.warning(f"⚠️ Explanation generation failed: {response.text}. Using fallback.")
-                explanation_text = "Detailed medical explanation is currently unavailable. Please consult with your ophthalmologist for a comprehensive analysis."
+                st.warning(f"⚠️ Explanation generation failed. Using fallback.")
+                explanation_text = "Detailed medical explanation is currently unavailable. Please consult with your ophthalmologist."
             else:
                 explanation_data = response.json()
                 explanation_text = explanation_data.get("explanation", "")
                 
-                # Remove debug stuff from AI output
+                # Remove debug lines from AI output
                 if "[INFO]" in explanation_text or "[DEBUG]" in explanation_text or "[WARN]" in explanation_text:
-                    # Extract only the actual explanation content
                     lines = explanation_text.split('\n')
                     lines = [line for line in lines if not line.strip().startswith('[')]
                     explanation_text = '\n'.join(lines).strip()
         
-        # Step 3: Generate Full Medical Report using Gemini
-        status_text.text("📄 Generating complete medical report...")
+        # Step 3: Generate Full Medical Report in selected language
+        status_text.text(f"📄 Generating complete medical report in {language}...")
         progress_bar.progress(65)
         
-        # Package all patient info
         report_data = {
             "patient_name": patient_name,
             "patient_age": str(patient_age),
@@ -748,14 +761,16 @@ def generate_report(uploaded_file, patient_name, patient_age, patient_gender,
             "gender": patient_gender,
             "physician": doctor_name if doctor_name else "",
             "email": patient_email,
-            "language": language
+            "language": language           # ← language passed explicitly
         }
+
+        print(f"[DEBUG] Sending report request with language: {language}")
         
         try:
             response = requests.post(
                 f"{API_BASE_URL}/generate-full-report",
                 json=report_data,
-                timeout=30  # Longer timeout for Gemini
+                timeout=60
             )
         except requests.exceptions.Timeout:
             status_text.empty()
@@ -782,9 +797,7 @@ def generate_report(uploaded_file, patient_name, patient_age, patient_gender,
         progress_bar.empty()
         
         st.session_state.report_generated = True
-        
-        # Success message
-        st.success("✅ Medical report generated successfully! Scroll down to view.")
+        st.success(f"✅ Medical report generated successfully in {language}! Scroll down to view.")
         
     except requests.exceptions.ConnectionError:
         progress_bar.empty()
@@ -797,7 +810,6 @@ def generate_report(uploaded_file, patient_name, patient_age, patient_gender,
         import traceback
         st.error(f"Debug info: {traceback.format_exc()}")
     finally:
-        # Always clean up
         progress_bar.empty()
         status_text.empty()
 
